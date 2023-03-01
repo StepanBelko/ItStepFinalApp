@@ -1,8 +1,10 @@
 package com.example.registrationlogindemo.controller;
 
 import com.example.registrationlogindemo.dto.UserDto;
+import com.example.registrationlogindemo.entity.Coin;
 import com.example.registrationlogindemo.entity.Role;
 import com.example.registrationlogindemo.entity.User;
+import com.example.registrationlogindemo.service.CoinService;
 import com.example.registrationlogindemo.service.RoleService;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.validation.Valid;
@@ -21,16 +23,16 @@ public class AuthController {
 
     private UserService userService;
     private RoleService roleService;
-//    private CoinService coinService;
+    private CoinService coinService;
 
 //    public AuthController(UserService userService) {
 //        this.userService = userService;
 //    }
 
-    public AuthController(UserService userService, RoleService roleService) {
+    public AuthController(UserService userService, RoleService roleService, CoinService coinService) {
         this.userService = userService;
         this.roleService = roleService;
-//        this.coinService = coinService;
+        this.coinService = coinService;
     }
 
     @GetMapping("index")
@@ -87,11 +89,11 @@ public class AuthController {
     }
 
 
-//    @GetMapping("/coins")
-//    public String showAllCoins(Model model) {
-//        coinService.updateCoinList();
-//        List<Coin> coins = coinService.getAllCoinsFromDB();
-//        model.addAttribute("coins", coins);
-//        return "coins";
-//    }
+    @GetMapping("/coins")
+    public String showAllCoins(Model model) {
+        coinService.updateCoinList();
+        List<Coin> coins = coinService.getAllCoinsFromDB();
+        model.addAttribute("coins", coins);
+        return "coins";
+    }
 }

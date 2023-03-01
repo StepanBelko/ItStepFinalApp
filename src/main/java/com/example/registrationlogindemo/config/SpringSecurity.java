@@ -31,7 +31,7 @@ public class SpringSecurity {
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/users").hasRole("USER")
-                                .requestMatchers("/roles").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/roles").hasRole("ADMIN")
                                 .requestMatchers("/coins").permitAll()
                 ).formLogin(
                         form -> form
