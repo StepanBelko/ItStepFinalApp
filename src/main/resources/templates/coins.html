@@ -41,6 +41,7 @@
     <table class="table table-striped table-bordered table-hover">
         <thead class="table-dark">
         <tr>
+            <th>Rank</th>
             <th>Id</th>
             <th>name</th>
             <!--                <th>Roles</th>-->
@@ -48,6 +49,7 @@
         </thead>
         <tbody>
         <tr th:each="coin: ${coins}">
+            <td th:text="${coin.rank}"></td>
             <td th:text="${coin.id}"></td>
             <td th:text="${coin.name}"></td>
             <!--                <td th:text="${user.roles}"></td>-->

@@ -7,5 +7,9 @@ import java.util.List;
 public interface CoinService {
     List<Coin> getAllCoinsFromWeb();
     List<Coin> getAllCoinsFromDB();
-    void updateCoinList();
+    boolean updateCoinList();
+    boolean updateCoinList(List<Coin> coinList);
+
+    boolean updateElement(Coin changeable, Coin coin);
+    Coin findByRank(int rank);
 }

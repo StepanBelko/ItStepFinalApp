@@ -4,6 +4,8 @@ package by.itstep.stpnbelko.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -67,5 +69,6 @@ public class Coin {
     @Column
     private double msupply;
 
+    
 
 }

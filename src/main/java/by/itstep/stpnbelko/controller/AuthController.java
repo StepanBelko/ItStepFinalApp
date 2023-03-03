@@ -25,10 +25,6 @@ public class AuthController {
     private final RoleService roleService;
     private final CoinService coinService;
 
-//    public AuthController(UserService userService) {
-//        this.userService = userService;
-//    }
-
     public AuthController(UserService userService, RoleService roleService, CoinService coinService) {
         this.userService = userService;
         this.roleService = roleService;
@@ -89,9 +85,28 @@ public class AuthController {
 
     @GetMapping("/coins")
     public String showAllCoins(Model model) {
-        coinService.updateCoinList();
+        List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
         List<Coin> coins = coinService.getAllCoinsFromDB();
+
+        if (coins.isEmpty()) {
+            coinService.updateCoinList();
+            coins = coinService.getAllCoinsFromDB();
+        }
+
+        for (int i = 0; i < coinFromWeb.size(); i++) {
+            if (!coins.get(i).equals(coinFromWeb.get(i))) {
+                System.out.println("Change : " + coins.get(i).getName());
+                coins.set(i, coinFromWeb.get(i));
+            }
+
+        }
+
+        System.out.println(coins.equals(coinFromWeb));
+        coinService.updateCoinList(coins);
+
         model.addAttribute("coins", coins);
         return "coins";
     }
+
+    
 }

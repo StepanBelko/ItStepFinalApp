@@ -1,7 +1,9 @@
 package by.itstep.stpnbelko.util;
 
 import by.itstep.stpnbelko.entity.Coin;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -9,16 +11,22 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static by.itstep.stpnbelko.util.ConnectionTest.isReallyOnline;
 
 public class JSONParser {
 
     private static final String TICKERS_URL = "https://api.coinlore.net/api/tickers/";
 
     public static List<Coin> getCoinsListFromUrl() {
+        if (!isReallyOnline()) {
+            return null;
+        }
         List<Coin> coinsList = null;
         try {
             String tickersJson = URLReader(new URL(TICKERS_URL), StandardCharsets.UTF_8);
@@ -36,25 +44,28 @@ public class JSONParser {
 
             return coinsList;
 
-        } catch (IOException | ParseException e) {
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String URLReader(URL url, Charset encoding) throws IOException {
-        try (InputStream in = url.openStream())
-        {
+    public static String URLReader(URL url, Charset encoding) {
+        try (InputStream in = url.openStream()) {
             byte[] bytes = in.readAllBytes();
             return new String(bytes, encoding);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public static void main(String[] args) {
-        List<Coin> coins = getCoinsListFromUrl();
-        System.out.println(coins);
 
-        Coin coin = coins.get(0);
-        System.out.println(coin);
     }
 
 
