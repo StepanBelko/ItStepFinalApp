@@ -8,13 +8,12 @@ import by.itstep.stpnbelko.service.CoinService;
 import by.itstep.stpnbelko.service.RoleService;
 import by.itstep.stpnbelko.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -85,7 +84,8 @@ public class AuthController {
 
     @GetMapping("/coins")
     public String showAllCoins(Model model) {
-        List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
+        return pagination(1, "rank", "ASC", model);
+       /* List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
         List<Coin> coins = coinService.getAllCoinsFromDB();
 
         if (coins.isEmpty()) {
@@ -105,7 +105,30 @@ public class AuthController {
         coinService.updateCoinList(coins);
 
         model.addAttribute("coins", coins);
-        return "coins";
+        return "coins";*/
+    }
+
+
+    @GetMapping("/coins/page/{pageNo}")
+    public String pagination(@PathVariable(value = "pageNo") int pageNo,
+                             @RequestParam("sortField") String sortField,
+                             @RequestParam("sortDir") String sortDir,
+                             Model model) {
+        int pageSize = 10;
+
+        Page<Coin> page = coinService.pagination(pageNo, pageSize, sortField, sortDir);
+        List<Coin> listCoins = page.getContent();
+
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("listCoins", listCoins);
+        return "coinsNewTemplate";
     }
 
     

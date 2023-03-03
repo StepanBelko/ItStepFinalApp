@@ -1,10 +1,14 @@
 package by.itstep.stpnbelko.service.impl;
 
+import by.itstep.stpnbelko.entity.User;
 import by.itstep.stpnbelko.service.CoinService;
 import by.itstep.stpnbelko.util.JSONParser;
 import by.itstep.stpnbelko.entity.Coin;
 import by.itstep.stpnbelko.repository.CoinRepository;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +67,14 @@ public class CoinServiceImpl implements CoinService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Page<Coin> pagination(int page, int size, String sortByField, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("ASC") ? Sort.by(sortByField).ascending() : Sort.by(sortByField).descending();
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        return coinRepository.findAll(pageable);
     }
 }
