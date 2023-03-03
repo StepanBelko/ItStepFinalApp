@@ -33,6 +33,7 @@ public class SpringSecurity {
                                 .requestMatchers("/users").hasRole("USER")
                                 .requestMatchers("/roles").hasRole("ADMIN")
                                 .requestMatchers("/coins").permitAll()
+                                .requestMatchers("/coins/**").permitAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

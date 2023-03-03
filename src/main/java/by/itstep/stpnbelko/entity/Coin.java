@@ -1,21 +1,21 @@
 package by.itstep.stpnbelko.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "coins")
-@Data
 public class Coin {
 
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.)
     @Column(nullable = false)
     private int id;
 
@@ -31,8 +31,8 @@ public class Coin {
     @Column(name = "coin_rank")
     private int rank;
 
-    @Column
-    private double price_usd;
+    @Column(name = "price_usd")
+    private double priceUsd;
 
     @Column
     private double percent_change_24h;
@@ -67,5 +67,9 @@ public class Coin {
     @Column
     private double msupply;
 
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof Coin;
+    }
 
 }
