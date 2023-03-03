@@ -15,7 +15,7 @@ public class Coin {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue(strategy = GenerationType.)
     @Column(nullable = false)
     private int id;
 
@@ -28,7 +28,7 @@ public class Coin {
     @Column(unique = true, nullable = false)
     private String nameid;
 
-    @Column
+    @Column(name = "coin_rank")
     private int rank;
 
     @Column

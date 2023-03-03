@@ -52,6 +52,9 @@ public class JSONParser {
     public static void main(String[] args) {
         List<Coin> coins = getCoinsListFromUrl();
         System.out.println(coins);
+
+        Coin coin = coins.get(0);
+        System.out.println(coin);
     }
 
 

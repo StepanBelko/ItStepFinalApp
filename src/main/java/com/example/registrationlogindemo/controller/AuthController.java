@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
+import static com.example.registrationlogindemo.util.JSONParser.getCoinsListFromUrl;
+
 @Controller
 public class AuthController {
 
@@ -63,13 +65,11 @@ public class AuthController {
             result.rejectValue("email", null, "There is already an account registered with that email");
         }
         if (result.hasErrors()) {
-            System.out.println("ERRROR!!!!");
             List<ObjectError> errors = result.getAllErrors();
 
             model.addAttribute("user", user);
             return "register";
         }
-        System.out.println("SAVE USER");
         userService.saveUser(user);
         return "redirect:/register?success";
     }
