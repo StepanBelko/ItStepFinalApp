@@ -53,13 +53,13 @@
                 </th>
 
                 <th>
-                    <a th:href="@{'/coins/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir}}">
-                        Price USD</a>
+                    <a th:href="@{'/coins/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">
+                        Name</a>
                 </th>
 
                 <th>
-                    <a th:href="@{'/coins/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">
-                        Name</a>
+                    <a th:href="@{'/coins/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir}}">
+                        Price USD</a>
                 </th>
 
             </tr>
@@ -72,9 +72,9 @@
 
                 <td th:text="${coin.id}"></td>
 
-                <td th:text="${coin.price_usd}"></td>
-
                 <td th:text="${coin.name}"></td>
+
+                <td th:text="${coin.price_usd}"></td>
 
                 <!--      <td><a th:href="@{/users/update/{id}(id=${user.id})}" class="btn btn-primary">Update</a>-->
                 <!--        <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger">Delete</a>-->
@@ -126,6 +126,10 @@
                 <span th:unless="${currentPage < totalPages}">Last</span>
             </div>
         </div>
+    </div>
+
+    <div>
+        <a th:href="@{'/coins/update/' + ${currentPage}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Update Table</a>
     </div>
 </div>
 </body>

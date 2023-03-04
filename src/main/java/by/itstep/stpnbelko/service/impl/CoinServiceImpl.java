@@ -87,18 +87,20 @@ public class CoinServiceImpl implements CoinService {
 
         if (coinsFromDB.isEmpty()) {
             updateCoinList();
-            coinsFromDB = coinRepository.findAll()
-            ;
+            coinsFromDB = coinRepository.findAll();
         }
-        System.out.println("Equals???? -      " + coinsFromDB.equals(coinsFromAPI));
+
+        boolean isTablesEquals = coinsFromDB.equals(coinsFromAPI);
+
+        System.out.println("Equals???? -      " + isTablesEquals);
+
         for (int i = 0; i < coinsFromAPI.size(); i++) {
             coinsFromDB.get(i).setPrice(coinsFromDB.get(i).getPrice_usd());
             if (!coinsFromDB.get(i).equals(coinsFromAPI.get(i))) {
-                System.out.println("Change : " + coinsFromDB.get(i).getName());
                 coinsFromDB.set(i, coinsFromAPI.get(i));
+                System.out.println("Change : " + coinsFromDB.get(i).getName());
                 counter++;
             }
-
         }
         System.out.println("Total changed : " + counter + ". Successfully " + coinsFromDB.equals(coinsFromAPI));
         coinRepository.saveAll(coinsFromDB);

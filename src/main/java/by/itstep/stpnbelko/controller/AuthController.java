@@ -115,7 +115,7 @@ public class AuthController {
                              @RequestParam("sortField") String sortField,
                              @RequestParam("sortDir") String sortDir,
                              Model model) {
-        int pageSize = 10;
+        int pageSize = 20;
 
 
         Page<Coin> page = coinService.pagination(pageNo, pageSize, sortField, sortDir);
@@ -132,6 +132,33 @@ public class AuthController {
         model.addAttribute("listCoins", listCoins);
         return "coinsNewTemplate";
     }
+
+    @GetMapping("/coins/update/{pageNo}")
+    public String update(@PathVariable(value = "pageNo") int pageNo,
+                             @RequestParam("sortField") String sortField,
+                             @RequestParam("sortDir") String sortDir,
+                             Model model) {
+
+        coinService.compareLists();
+//
+//        int pageSize = 10;
+//
+//
+//        Page<Coin> page = coinService.pagination(pageNo, pageSize, sortField, sortDir);
+//        List<Coin> listCoins = page.getContent();
+//
+//        model.addAttribute("currentPage", pageNo);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//
+//        model.addAttribute("sortField", sortField);
+//        model.addAttribute("sortDir", sortDir);
+//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+//
+//        model.addAttribute("listCoins", listCoins);
+        return pagination(pageNo,sortField,sortDir,model);
+    }
+
 
 
 }
