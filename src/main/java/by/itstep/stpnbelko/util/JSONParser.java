@@ -1,6 +1,7 @@
 package by.itstep.stpnbelko.util;
 
 import by.itstep.stpnbelko.entity.Coin;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,15 +33,20 @@ public class JSONParser {
             String tickersJson = URLReader(new URL(TICKERS_URL), StandardCharsets.UTF_8);
             // Считываем json
             Object obj = new org.json.simple.parser.JSONParser().parse(tickersJson);
+
             // Кастим obj в JSONObject
             JSONObject rootJsonObj = (JSONObject) obj;
 
             JSONArray jsonArray = (JSONArray) rootJsonObj.get("data");
-
+            
             ObjectMapper mapper = new ObjectMapper();
 
-            coinsList = mapper.readValue(String.valueOf(jsonArray), new TypeReference<>() {
+
+            coinsList = mapper.readValue(String.valueOf(jsonArray), new TypeReference<List<Coin>>() {
             });
+            
+
+//            coinsList = (List<Coin>) mapper.readValue(String.valueOf(jsonArray), Coin.class);
 
             return coinsList;
 

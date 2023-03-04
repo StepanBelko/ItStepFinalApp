@@ -84,8 +84,8 @@ public class AuthController {
 
     @GetMapping("/coins")
     public String showAllCoins(Model model) {
-        return pagination(1, "rank", "ASC", model);
-       /* List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
+        coinService.compareLists();
+/*        List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
         List<Coin> coins = coinService.getAllCoinsFromDB();
 
         if (coins.isEmpty()) {
@@ -106,6 +106,7 @@ public class AuthController {
 
         model.addAttribute("coins", coins);
         return "coins";*/
+        return pagination(1, "rank", "ASC", model);
     }
 
 
@@ -115,6 +116,7 @@ public class AuthController {
                              @RequestParam("sortDir") String sortDir,
                              Model model) {
         int pageSize = 10;
+
 
         Page<Coin> page = coinService.pagination(pageNo, pageSize, sortField, sortDir);
         List<Coin> listCoins = page.getContent();
@@ -131,5 +133,5 @@ public class AuthController {
         return "coinsNewTemplate";
     }
 
-    
+
 }

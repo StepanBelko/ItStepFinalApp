@@ -3,6 +3,7 @@ package by.itstep.stpnbelko.service;
 import by.itstep.stpnbelko.entity.Coin;
 import by.itstep.stpnbelko.entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,4 +17,7 @@ public interface CoinService {
     Coin findByRank(int rank);
 
     Page<Coin> pagination(int pageNo, int pageSize, String sortField, String sortDir);
+
+    boolean compareLists();
+
 }

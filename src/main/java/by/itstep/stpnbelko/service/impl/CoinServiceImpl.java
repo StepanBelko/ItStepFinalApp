@@ -1,15 +1,11 @@
 package by.itstep.stpnbelko.service.impl;
 
-import by.itstep.stpnbelko.entity.User;
 import by.itstep.stpnbelko.service.CoinService;
 import by.itstep.stpnbelko.util.JSONParser;
 import by.itstep.stpnbelko.entity.Coin;
 import by.itstep.stpnbelko.repository.CoinRepository;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,6 +71,39 @@ public class CoinServiceImpl implements CoinService {
         Sort sort = sortDir.equalsIgnoreCase("ASC") ? Sort.by(sortByField).ascending() : Sort.by(sortByField).descending();
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        return coinRepository.findAll(pageable);
+        System.out.println("!!! Sort field : " + sortByField);
+
+        //Тут всё валится из-за нижнего подчёркивания price_usd
+        Page<Coin> coinPage = coinRepository.findAll(pageable);
+
+        return coinPage;
     }
+
+    @Override
+    public boolean compareLists() {
+        List<Coin> coinsFromDB = getAllCoinsFromDB();
+        List<Coin> coinsFromAPI = getAllCoinsFromWeb();
+        int counter = 0;
+
+        if (coinsFromDB.isEmpty()) {
+            updateCoinList();
+            coinsFromDB = coinRepository.findAll()
+            ;
+        }
+        System.out.println("Equals???? -      " + coinsFromDB.equals(coinsFromAPI));
+        for (int i = 0; i < coinsFromAPI.size(); i++) {
+            coinsFromDB.get(i).setPrice(coinsFromDB.get(i).getPrice_usd());
+            if (!coinsFromDB.get(i).equals(coinsFromAPI.get(i))) {
+                System.out.println("Change : " + coinsFromDB.get(i).getName());
+                coinsFromDB.set(i, coinsFromAPI.get(i));
+                counter++;
+            }
+
+        }
+        System.out.println("Total changed : " + counter + ". Successfully " + coinsFromDB.equals(coinsFromAPI));
+        coinRepository.saveAll(coinsFromDB);
+
+        return coinsFromDB.equals(coinsFromAPI);
+    }
+
 }

@@ -1,15 +1,15 @@
 package by.itstep.stpnbelko.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "coins")
 public class Coin {
@@ -31,8 +31,13 @@ public class Coin {
     @Column(name = "coin_rank")
     private int rank;
 
+
     @Column(name = "price_usd")
-    private double priceUsd;
+    private double price_usd;
+
+    @Column(name ="price")
+    @JsonIgnore
+    private double price;
 
     @Column
     private double percent_change_24h;
@@ -67,9 +72,18 @@ public class Coin {
     @Column
     private double msupply;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof Coin;
+        Coin coin = (Coin) o;
+        boolean difference = Math.abs(coin.price_usd - this.price_usd) < this.price_usd * 0.01;
+        return id == coin.id && rank == coin.rank && difference && Double.compare(coin.price_btc, price_btc) == 0;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rank, price_usd, price_btc);
+    }
 }
