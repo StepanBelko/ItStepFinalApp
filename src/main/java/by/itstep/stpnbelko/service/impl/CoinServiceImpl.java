@@ -20,7 +20,13 @@ public class CoinServiceImpl implements CoinService {
 
     @Override
     public List<Coin> getAllCoinsFromWeb() {
-        return JSONParser.getCoinsListFromUrl();
+        List<Coin> coinList = JSONParser.getCoinsListFromUrl();
+
+        for (Coin coin : coinList) {
+            coin.setPrice(coin.getPrice_usd());
+        }
+
+        return coinList;
     }
 
     @Override
@@ -30,7 +36,7 @@ public class CoinServiceImpl implements CoinService {
 
     @Override
     public boolean updateCoinList() {
-        List<Coin> coins = JSONParser.getCoinsListFromUrl();
+        List<Coin> coins = getAllCoinsFromWeb();
         if (coins != null) {
             coinRepository.saveAll(coins);
             return true;
@@ -86,22 +92,25 @@ public class CoinServiceImpl implements CoinService {
         int counter = 0;
 
         if (coinsFromDB.isEmpty()) {
-            updateCoinList();
-            coinsFromDB = coinRepository.findAll();
+            updateCoinList();    // Обновить базу
+            coinsFromDB = coinRepository.findAll(); // Взять из неё данные
         }
 
         boolean isTablesEquals = coinsFromDB.equals(coinsFromAPI);
 
         System.out.println("Equals???? -      " + isTablesEquals);
 
-        for (int i = 0; i < coinsFromAPI.size(); i++) {
-            coinsFromDB.get(i).setPrice(coinsFromDB.get(i).getPrice_usd());
-            if (!coinsFromDB.get(i).equals(coinsFromAPI.get(i))) {
-                coinsFromDB.set(i, coinsFromAPI.get(i));
-                System.out.println("Change : " + coinsFromDB.get(i).getName());
-                counter++;
+        if (!isTablesEquals) {
+            for (int i = 0; i < coinsFromAPI.size(); i++) {
+                if (!coinsFromDB.get(i).equals(coinsFromAPI.get(i))) {
+                    coinsFromDB.get(i).setPrice(coinsFromDB.get(i).getPrice_usd());
+                    coinsFromDB.set(i, coinsFromAPI.get(i));
+                    System.out.println("Change : " + coinsFromDB.get(i).getName());
+                    counter++;
+                }
             }
         }
+
         System.out.println("Total changed : " + counter + ". Successfully " + coinsFromDB.equals(coinsFromAPI));
         coinRepository.saveAll(coinsFromDB);
 
