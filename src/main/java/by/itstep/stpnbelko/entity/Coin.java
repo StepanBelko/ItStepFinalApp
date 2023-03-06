@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -71,6 +72,10 @@ public class Coin {
 
     @Column
     private double msupply;
+
+    @OneToMany(cascade = CascadeType.REFRESH, orphanRemoval = true)
+    @JoinColumn(name = "coin_id")
+    private List<History> coinHistory;
 
     @Override
     public boolean equals(Object o) {
