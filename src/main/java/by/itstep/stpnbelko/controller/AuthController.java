@@ -1,10 +1,13 @@
 package by.itstep.stpnbelko.controller;
 
+import by.itstep.stpnbelko.dto.HistoryDto;
 import by.itstep.stpnbelko.dto.UserDto;
 import by.itstep.stpnbelko.entity.Coin;
+import by.itstep.stpnbelko.entity.History;
 import by.itstep.stpnbelko.entity.Role;
 import by.itstep.stpnbelko.entity.User;
 import by.itstep.stpnbelko.service.CoinService;
+import by.itstep.stpnbelko.service.HistoryService;
 import by.itstep.stpnbelko.service.RoleService;
 import by.itstep.stpnbelko.service.UserService;
 import jakarta.validation.Valid;
@@ -23,11 +26,13 @@ public class AuthController {
     private final UserService userService;
     private final RoleService roleService;
     private final CoinService coinService;
+    private final HistoryService historyService;
 
-    public AuthController(UserService userService, RoleService roleService, CoinService coinService) {
+    public AuthController(UserService userService, RoleService roleService, CoinService coinService, HistoryService historyService) {
         this.userService = userService;
         this.roleService = roleService;
         this.coinService = coinService;
+        this.historyService = historyService;
     }
 
     @GetMapping("index")
@@ -140,23 +145,38 @@ public class AuthController {
                              Model model) {
 
         coinService.compareLists();
-//
-//        int pageSize = 10;
-//
-//
-//        Page<Coin> page = coinService.pagination(pageNo, pageSize, sortField, sortDir);
-//        List<Coin> listCoins = page.getContent();
-//
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//
-//        model.addAttribute("sortField", sortField);
-//        model.addAttribute("sortDir", sortDir);
-//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-//
-//        model.addAttribute("listCoins", listCoins);
         return pagination(pageNo,sortField,sortDir,model);
+    }
+
+
+
+    @GetMapping("/history")
+    public String showAllHistory(Model model) {
+        return historyPagination(1, "timeStamp", "DESC", model);
+    }
+
+
+    @GetMapping("/history/page/{pageNo}")
+    public String historyPagination(@PathVariable(value = "pageNo") int pageNo,
+                             @RequestParam("sortField") String sortField,
+                             @RequestParam("sortDir") String sortDir,
+                             Model model) {
+        int pageSize = 20;
+
+
+        Page<History> page = historyService.pagination(pageNo, pageSize, sortField, sortDir);
+        List<History> listHistory = page.getContent();
+
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("listHistory", listHistory);
+        return "history";
     }
 
 
