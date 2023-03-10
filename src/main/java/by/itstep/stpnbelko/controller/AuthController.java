@@ -1,6 +1,5 @@
 package by.itstep.stpnbelko.controller;
 
-import by.itstep.stpnbelko.dto.HistoryDto;
 import by.itstep.stpnbelko.dto.UserDto;
 import by.itstep.stpnbelko.entity.Coin;
 import by.itstep.stpnbelko.entity.History;
@@ -10,6 +9,9 @@ import by.itstep.stpnbelko.service.CoinService;
 import by.itstep.stpnbelko.service.HistoryService;
 import by.itstep.stpnbelko.service.RoleService;
 import by.itstep.stpnbelko.service.UserService;
+import by.itstep.stpnbelko.service.impl.EmailServiceImpl;
+import by.itstep.stpnbelko.util.AppConstants;
+import by.itstep.stpnbelko.util.IOUtils;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -27,12 +29,14 @@ public class AuthController {
     private final RoleService roleService;
     private final CoinService coinService;
     private final HistoryService historyService;
+    private final EmailServiceImpl emailService;
 
-    public AuthController(UserService userService, RoleService roleService, CoinService coinService, HistoryService historyService) {
+    public AuthController(UserService userService, RoleService roleService, CoinService coinService, HistoryService historyService, EmailServiceImpl emailService) {
         this.userService = userService;
         this.roleService = roleService;
         this.coinService = coinService;
         this.historyService = historyService;
+        this.emailService = emailService;
     }
 
     @GetMapping("index")
@@ -69,6 +73,18 @@ public class AuthController {
             return "register";
         }
         userService.saveUser(user);
+
+
+        String content = IOUtils.readFileBuff("/Users/skynet/IdeaProjects/ItStepFinalApp/src/main/resources/templates/activate.html");
+
+        emailService.sendSimpleMessage("Stpn.belko@rambler.ru", "TEST123", content);
+//        TEST!!!!
+//        emailService.sendSimpleMessage(user.getEmail(), "TEST123", content);
+//        Activate mail
+//        MailUtils.send("Stpn.belko@gmail.com", "TEST123", "ASDASD");
+
+
+
         return "redirect:/register?success";
     }
 
