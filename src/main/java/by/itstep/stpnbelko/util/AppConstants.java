@@ -15,6 +15,8 @@ public class AppConstants {
 //        public static final String NEW_MAIL_ACC = "Stpn.belko@rambler.ru";
     public static final String NEW_MAIL_PWD = "Rambler12020";
 
+    public static final String ACTIVATION_LINK = "http://localhost:8080/activate/";
+
 
 }
 

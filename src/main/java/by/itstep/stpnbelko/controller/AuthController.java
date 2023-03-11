@@ -27,16 +27,10 @@ public class AuthController {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final CoinService coinService;
-    private final HistoryService historyService;
-    private final EmailServiceImpl emailService;
 
-    public AuthController(UserService userService, RoleService roleService, CoinService coinService, HistoryService historyService, EmailServiceImpl emailService) {
+    public AuthController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.coinService = coinService;
-        this.historyService = historyService;
-        this.emailService = emailService;
     }
 
     @GetMapping("index")
@@ -72,20 +66,9 @@ public class AuthController {
             model.addAttribute("user", user);
             return "register";
         }
+        model.addAttribute("message", "User successfully added. Check your email to get activation link");
         userService.saveUser(user);
-
-
-        String content = IOUtils.readFileBuff("/Users/skynet/IdeaProjects/ItStepFinalApp/src/main/resources/templates/activate.html");
-
-        emailService.sendSimpleMessage("Stpn.belko@rambler.ru", "TEST123", content);
-//        TEST!!!!
-//        emailService.sendSimpleMessage(user.getEmail(), "TEST123", content);
-//        Activate mail
-//        MailUtils.send("Stpn.belko@gmail.com", "TEST123", "ASDASD");
-
-
-
-        return "redirect:/register?success";
+        return "login";
     }
 
     @GetMapping("/users")
@@ -95,6 +78,21 @@ public class AuthController {
         return "users";
     }
 
+    @GetMapping("/activate/{code}")
+    public String activate(Model model, @PathVariable (value="code") String code) {
+        System.out.println("activation mapping");
+        boolean isActivated = userService.activateUser(code);
+
+        if(isActivated) {
+            model.addAttribute("message", "User successfully activated. Please login");
+        } else {
+            model.addAttribute("message", "Activation code is not found");
+        }
+
+
+        return "login";
+    }
+
     @GetMapping("/roles")
     public String showAllRoles(Model model) {
         List<Role> roles = roleService.getAllRoles();
@@ -102,98 +100,6 @@ public class AuthController {
         return "roles";
     }
 
-
-    @GetMapping("/coins")
-    public String showAllCoins(Model model) {
-        coinService.compareLists();
-/*        List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
-        List<Coin> coins = coinService.getAllCoinsFromDB();
-
-        if (coins.isEmpty()) {
-            coinService.updateCoinList();
-            coins = coinService.getAllCoinsFromDB();
-        }
-
-        for (int i = 0; i < coinFromWeb.size(); i++) {
-            if (!coins.get(i).equals(coinFromWeb.get(i))) {
-                System.out.println("Change : " + coins.get(i).getName());
-                coins.set(i, coinFromWeb.get(i));
-            }
-
-        }
-
-        System.out.println(coins.equals(coinFromWeb));
-        coinService.updateCoinList(coins);
-
-        model.addAttribute("coins", coins);
-        return "coins";*/
-        return pagination(1, "rank", "ASC", model);
-    }
-
-
-    @GetMapping("/coins/page/{pageNo}")
-    public String pagination(@PathVariable(value = "pageNo") int pageNo,
-                             @RequestParam("sortField") String sortField,
-                             @RequestParam("sortDir") String sortDir,
-                             Model model) {
-        int pageSize = 20;
-
-
-        Page<Coin> page = coinService.pagination(pageNo, pageSize, sortField, sortDir);
-        List<Coin> listCoins = page.getContent();
-
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
-        model.addAttribute("listCoins", listCoins);
-        return "coinsNewTemplate";
-    }
-
-    @GetMapping("/coins/update/{pageNo}")
-    public String update(@PathVariable(value = "pageNo") int pageNo,
-                             @RequestParam("sortField") String sortField,
-                             @RequestParam("sortDir") String sortDir,
-                             Model model) {
-
-        coinService.compareLists();
-        return pagination(pageNo,sortField,sortDir,model);
-    }
-
-
-
-    @GetMapping("/history")
-    public String showAllHistory(Model model) {
-        return historyPagination(1, "timeStamp", "DESC", model);
-    }
-
-
-    @GetMapping("/history/page/{pageNo}")
-    public String historyPagination(@PathVariable(value = "pageNo") int pageNo,
-                             @RequestParam("sortField") String sortField,
-                             @RequestParam("sortDir") String sortDir,
-                             Model model) {
-        int pageSize = 20;
-
-
-        Page<History> page = historyService.pagination(pageNo, pageSize, sortField, sortDir);
-        List<History> listHistory = page.getContent();
-
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
-        model.addAttribute("listHistory", listHistory);
-        return "history";
-    }
 
 
 

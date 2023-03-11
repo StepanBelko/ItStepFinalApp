@@ -12,4 +12,7 @@ public interface UserService {
 
     List<UserDto> findAllUsers();
 
+    boolean activateUser(String code);
+
+    User findByActivationCode(String code);
 }
