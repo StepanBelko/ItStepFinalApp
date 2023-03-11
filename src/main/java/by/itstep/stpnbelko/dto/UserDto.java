@@ -28,4 +28,8 @@ public class UserDto
     private List<Role> roleSet;
     @NotEmpty(message = "Password should not be empty")
     private String password;
+//    @NotEmpty
+    private boolean active;
+//    @NotEmpty
+    private String activationCode;
 }
