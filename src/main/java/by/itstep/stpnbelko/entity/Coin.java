@@ -73,7 +73,7 @@ public class Coin {
     @Column
     private double msupply;
 
-    @OneToMany(cascade = CascadeType.REFRESH, orphanRemoval = true)
+    @OneToMany()
     @JoinColumn(name = "coin_id")
     private List<History> coinHistory;
 
