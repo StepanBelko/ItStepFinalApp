@@ -5,19 +5,18 @@ import by.itstep.stpnbelko.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CoinService {
     List<Coin> getAllCoinsFromWeb();
     List<Coin> getAllCoinsFromDB();
     boolean updateCoinList();
-    boolean updateCoinList(List<Coin> coinList);
-
-    boolean updateElement(Coin changeable, Coin coin);
-    Coin findByRank(int rank);
 
     Page<Coin> pagination(int pageNo, int pageSize, String sortField, String sortDir);
 
     boolean compareLists();
+
+    LocalDateTime getLastUpdTime();
 
 }

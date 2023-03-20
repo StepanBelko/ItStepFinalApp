@@ -5,17 +5,19 @@ import by.itstep.stpnbelko.util.JSONParser;
 import by.itstep.stpnbelko.entity.Coin;
 import by.itstep.stpnbelko.repository.CoinRepository;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class CoinServiceImpl implements CoinService {
     private final CoinRepository coinRepository;
+    private LocalDateTime lastUpdTime;
 
     public CoinServiceImpl(CoinRepository coinRepository) {
         this.coinRepository = coinRepository;
+        lastUpdTime = LocalDateTime.now();
     }
 
     @Override
@@ -38,38 +40,39 @@ public class CoinServiceImpl implements CoinService {
     public boolean updateCoinList() {
         List<Coin> coins = getAllCoinsFromWeb();
         if (coins != null) {
+            lastUpdTime = LocalDateTime.now();
             coinRepository.saveAll(coins);
             return true;
         }
         return false;
     }
 
-    @Override
-    public boolean updateCoinList(List<Coin> coins) {
-        if (coins != null) {
-            coinRepository.saveAll(coins);
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean updateCoinList(List<Coin> coins) {
+//        if (coins != null) {
+//            coinRepository.saveAll(coins);
+//            return true;
+//        }
+//        return false;
+//    }
 
-    @Override
-    public boolean updateElement(Coin changeable, Coin coin) {
-        System.out.println("Delete coin : " + changeable.getName());
-//        coinRepository.findBy();
+//    @Override
+//    public boolean updateElement(Coin changeable, Coin coin) {
+//        System.out.println("Delete coin : " + changeable.getName());
+////        coinRepository.findBy();
+//
+//        return true;
+//    }
 
-        return true;
-    }
-
-    @Override
-    public Coin findByRank(int rank) {
-        for (Coin coin : coinRepository.findAll()) {
-            if (coin.getRank() == rank) {
-                return coin;
-            }
-        }
-        return null;
-    }
+//    @Override
+//    public Coin findByRank(int rank) {
+//        for (Coin coin : coinRepository.findAll()) {
+//            if (coin.getRank() == rank) {
+//                return coin;
+//            }
+//        }
+//        return null;
+//    }
 
     @Override
     public Page<Coin> pagination(int page, int size, String sortByField, String sortDir) {
@@ -110,6 +113,7 @@ public class CoinServiceImpl implements CoinService {
                 }
             }
         }
+        lastUpdTime = LocalDateTime.now();
 
         System.out.println("Total changed : " + counter + ". Successfully " + coinsFromDB.equals(coinsFromAPI));
         coinRepository.saveAll(coinsFromDB);
@@ -117,4 +121,8 @@ public class CoinServiceImpl implements CoinService {
         return coinsFromDB.equals(coinsFromAPI);
     }
 
+    @Override
+    public LocalDateTime getLastUpdTime() {
+        return lastUpdTime;
+    }
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -18,6 +20,7 @@ public class CoinController {
 
     private final CoinService coinService;
     private final HistoryService historyService;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss; dd MMMM yyyy");
 
     public CoinController(CoinService coinService, HistoryService historyService) {
         this.coinService = coinService;
@@ -27,28 +30,7 @@ public class CoinController {
 
     @GetMapping("/coins")
     public String showAllCoins(Model model) {
-        coinService.compareLists();
-/*        List<Coin> coinFromWeb = coinService.getAllCoinsFromWeb();
-        List<Coin> coins = coinService.getAllCoinsFromDB();
-
-        if (coins.isEmpty()) {
-            coinService.updateCoinList();
-            coins = coinService.getAllCoinsFromDB();
-        }
-
-        for (int i = 0; i < coinFromWeb.size(); i++) {
-            if (!coins.get(i).equals(coinFromWeb.get(i))) {
-                System.out.println("Change : " + coins.get(i).getName());
-                coins.set(i, coinFromWeb.get(i));
-            }
-
-        }
-
-        System.out.println(coins.equals(coinFromWeb));
-        coinService.updateCoinList(coins);
-
-        model.addAttribute("coins", coins);
-        return "coins";*/
+//        coinService.compareLists();
         return pagination(1, "rank", "ASC", model);
     }
 
@@ -73,6 +55,8 @@ public class CoinController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
         model.addAttribute("listCoins", listCoins);
+
+        model.addAttribute("lastUpdTime", coinService.getLastUpdTime().format(TIME_FORMATTER));
         return "coinsNewTemplate";
     }
 
@@ -83,6 +67,7 @@ public class CoinController {
                          Model model) {
 
         coinService.compareLists();
+        model.addAttribute("lastUpdTime", coinService.getLastUpdTime().format(TIME_FORMATTER));
         return pagination(pageNo, sortField, sortDir, model);
     }
 
