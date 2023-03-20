@@ -38,6 +38,11 @@ public class AuthController {
         return "index";
     }
 
+    @GetMapping("/")
+    public String homeSecondVersion() {
+        return "index";
+    }
+
     @GetMapping("/login")
     public String loginForm() {
         return "login";
