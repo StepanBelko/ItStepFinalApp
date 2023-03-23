@@ -5,12 +5,16 @@ import by.itstep.stpnbelko.util.JSONParser;
 import by.itstep.stpnbelko.entity.Coin;
 import by.itstep.stpnbelko.repository.CoinRepository;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@EnableScheduling
 public class CoinServiceImpl implements CoinService {
     private final CoinRepository coinRepository;
     private LocalDateTime lastUpdTime;
@@ -35,44 +39,17 @@ public class CoinServiceImpl implements CoinService {
     public List<Coin> getAllCoinsFromDB() {
         return coinRepository.findAll(Sort.by(Sort.Direction.ASC, "rank"));
     }
-
+    
+    @Scheduled(initialDelayString = "${initialDelay}", fixedRateString = "${fixedRate}")
     @Override
-    public boolean updateCoinList() {
+    public void updateCoinList() {
+        System.out.println("\nUPDATE DATA \n" + lastUpdTime.format(DateTimeFormatter.ofPattern("HH:mm:ss; dd MMMM yyyy")) + "\n\n");
         List<Coin> coins = getAllCoinsFromWeb();
         if (coins != null) {
             lastUpdTime = LocalDateTime.now();
             coinRepository.saveAll(coins);
-            return true;
         }
-        return false;
     }
-
-//    @Override
-//    public boolean updateCoinList(List<Coin> coins) {
-//        if (coins != null) {
-//            coinRepository.saveAll(coins);
-//            return true;
-//        }
-//        return false;
-//    }
-
-//    @Override
-//    public boolean updateElement(Coin changeable, Coin coin) {
-//        System.out.println("Delete coin : " + changeable.getName());
-////        coinRepository.findBy();
-//
-//        return true;
-//    }
-
-//    @Override
-//    public Coin findByRank(int rank) {
-//        for (Coin coin : coinRepository.findAll()) {
-//            if (coin.getRank() == rank) {
-//                return coin;
-//            }
-//        }
-//        return null;
-//    }
 
     @Override
     public Page<Coin> pagination(int page, int size, String sortByField, String sortDir) {
@@ -106,7 +83,6 @@ public class CoinServiceImpl implements CoinService {
         if (!isTablesEquals) {
             for (int i = 0; i < coinsFromAPI.size(); i++) {
                 if (!coinsFromDB.get(i).equals(coinsFromAPI.get(i))) {
-                    coinsFromDB.get(i).setPrice(coinsFromDB.get(i).getPrice_usd());
                     coinsFromDB.set(i, coinsFromAPI.get(i));
                     System.out.println("Change : " + coinsFromDB.get(i).getName());
                     counter++;

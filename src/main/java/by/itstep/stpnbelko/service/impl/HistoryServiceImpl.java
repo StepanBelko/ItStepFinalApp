@@ -31,6 +31,11 @@ public class HistoryServiceImpl implements HistoryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void clearHistory() {
+        historyRepository.deleteAll();
+    }
+
     private HistoryDto convertEntityToDto(History history) {
         HistoryDto historyDto = new HistoryDto();
 
@@ -58,7 +63,6 @@ public class HistoryServiceImpl implements HistoryService {
         System.out.println("!!! Sort field : " + sortByField);
 
         //Тут всё валится из-за нижнего подчёркивания price_usd
-
 
         Page<History> coinPage = historyRepository.findAll(pageable);
 

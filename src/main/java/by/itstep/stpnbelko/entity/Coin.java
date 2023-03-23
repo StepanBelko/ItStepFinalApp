@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Coin {
 
 
-    @Id
+//    @Id
     @Column(nullable = false)
     private int id;
 
@@ -29,6 +29,7 @@ public class Coin {
     @Column(unique = true, nullable = false)
     private String nameid;
 
+    @Id
     @Column(name = "coin_rank")
     private int rank;
 
@@ -73,9 +74,9 @@ public class Coin {
     @Column
     private double msupply;
 
-    @OneToMany()
-    @JoinColumn(name = "coin_id")
-    private List<History> coinHistory;
+//    @OneToMany()
+//    @JoinColumn(name = "coin_id")
+//    private List<History> coinHistory;
 
     @Override
     public boolean equals(Object o) {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -19,18 +18,15 @@ import java.util.List;
 public class CoinController {
 
     private final CoinService coinService;
-    private final HistoryService historyService;
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss; dd MMMM yyyy");
 
-    public CoinController(CoinService coinService, HistoryService historyService) {
+    public CoinController(CoinService coinService) {
         this.coinService = coinService;
-        this.historyService = historyService;
     }
 
 
     @GetMapping("/coins")
     public String showAllCoins(Model model) {
-//        coinService.compareLists();
         return pagination(1, "rank", "ASC", model);
     }
 
@@ -67,37 +63,7 @@ public class CoinController {
                          Model model) {
 
         coinService.compareLists();
-        model.addAttribute("lastUpdTime", coinService.getLastUpdTime().format(TIME_FORMATTER));
-        return pagination(pageNo, sortField, sortDir, model);
+        return "redirect:/coins/page/" + pageNo + "?sortField="+ sortField +"&sortDir="+ sortDir;
     }
 
-
-    @GetMapping("/history")
-    public String showAllHistory(Model model) {
-        return historyPagination(1, "timeStamp", "DESC", model);
-    }
-
-
-    @GetMapping("/history/page/{pageNo}")
-    public String historyPagination(@PathVariable(value = "pageNo") int pageNo,
-                                    @RequestParam("sortField") String sortField,
-                                    @RequestParam("sortDir") String sortDir,
-                                    Model model) {
-        int pageSize = 20;
-
-
-        Page<History> page = historyService.pagination(pageNo, pageSize, sortField, sortDir);
-        List<History> listHistory = page.getContent();
-
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
-        model.addAttribute("listHistory", listHistory);
-        return "history";
-    }
 }

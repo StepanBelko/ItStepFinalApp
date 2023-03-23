@@ -11,7 +11,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Currency list</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -44,12 +45,10 @@
         </div>
     </div>
 </nav>
-<body>
 
 <div class="container my-2">
     <h1> Coins </h1>
     <h2 th:text="'Last update time  ' + ${lastUpdTime}"></h2>
-
 
 
     <div th:if="${listCoins.size() > 0}">
@@ -90,9 +89,6 @@
 
                 <td th:text="${coin.price_usd}"></td>
 
-                <!--      <td><a th:href="@{/users/update/{id}(id=${user.id})}" class="btn btn-primary">Update</a>-->
-                <!--        <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger">Delete</a>-->
-                <!--      </td>-->
             </tr>
             </tbody>
         </table>
@@ -142,8 +138,9 @@
         </div>
     </div>
 
-    <div>
-        <a th:href="@{'/coins/update/' + ${currentPage}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Update Table</a>
-    </div>
+        <div>
+            <a class="btn btn-outline-success" th:href="@{'/coins/update/' + ${currentPage}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Update Table</a>
+        </div>
+
 </div>
 </body>

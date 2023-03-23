@@ -11,5 +11,8 @@ import java.util.List;
 public interface HistoryService {
 
     Page<History> pagination(int pageNo, int pageSize, String sortField, String sortDir);
-    public List<HistoryDto> findAllHistory();
+
+    List<HistoryDto> findAllHistory();
+
+    void clearHistory();
 }
