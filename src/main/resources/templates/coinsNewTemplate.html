@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
 <head>
     <meta charset="UTF-8">
     <title>Currency list</title>
@@ -50,7 +55,6 @@
     <h1> Coins </h1>
     <h2 th:text="'Last update time  ' + ${lastUpdTime}"></h2>
 
-
     <div th:if="${listCoins.size() > 0}">
 
         <table class="table table-striped table-bordered table-hover">
@@ -95,8 +99,6 @@
 
 
     </div>
-
-    <!--  <a th:href="@{/users/add}" class="btn btn-primary btn-sm mb-3"> Add User </a>-->
 
     <div th:if="${totalPages > 1}">
         <div class="row col-sm-10">

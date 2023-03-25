@@ -52,6 +52,10 @@
     <div class="row">
         <h1> Registered Users </h1>
     </div>
+
+    <h3 th:text="'User in session ' + ${userInSession.email}">: </h3>
+    <h3 th:text="'User roles ' + ${userInSession.roles.size()}">: </h3>
+
     <table class="table table-striped table-bordered table-hover">
         <thead class="table-dark">
         <tr>
@@ -59,11 +63,13 @@
             <th>Last Name</th>
             <th>Email</th>
             <th>Roles</th>
-            <!--                <th>Roles</th>-->
+            <th>Action</th>
+
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user: ${users}">
+        <tr th:each="user: ${users}"
+            th:style="${userInSession.email} == ${user.email} ? 'background-color: aquamarine' : ''">
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.email}"></td>
@@ -74,7 +80,26 @@
             </td>
 
             <td th:if="${user.roleSet.size} == 0">
-                    <a>No roles</a>
+                <a>No roles</a>
+            </td>
+
+            <td>
+                <div th:each="role: ${userInSession.roles}">
+
+                    <form th:if="${role.name} == 'ROLE_ADMIN'"
+                          method="get"
+                          th:action="@{/updateUser}" th:object="${user}">
+
+                        <div class="mb-3">
+                            <input name="email" type="hidden" th:value="${user.email}"/>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+
+
+                    </form>
+
+                </div>
+
             </td>
 
         </tr>

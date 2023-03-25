@@ -1,19 +1,13 @@
 package by.itstep.stpnbelko.controller;
 
 import by.itstep.stpnbelko.dto.UserDto;
-import by.itstep.stpnbelko.entity.Coin;
-import by.itstep.stpnbelko.entity.History;
 import by.itstep.stpnbelko.entity.Role;
 import by.itstep.stpnbelko.entity.User;
-import by.itstep.stpnbelko.service.CoinService;
-import by.itstep.stpnbelko.service.HistoryService;
 import by.itstep.stpnbelko.service.RoleService;
 import by.itstep.stpnbelko.service.UserService;
-import by.itstep.stpnbelko.service.impl.EmailServiceImpl;
-import by.itstep.stpnbelko.util.AppConstants;
-import by.itstep.stpnbelko.util.IOUtils;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,10 +21,12 @@ public class AuthController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final HttpSession httpSession;
 
-    public AuthController(UserService userService, RoleService roleService) {
+    public AuthController(UserService userService, RoleService roleService, HttpSession httpSession) {
         this.userService = userService;
         this.roleService = roleService;
+        this.httpSession = httpSession;
     }
 
     @GetMapping("index")
@@ -79,6 +75,10 @@ public class AuthController {
     @GetMapping("/users")
     public String listRegisteredUsers(Model model) {
         List<UserDto> users = userService.findAllUsers();
+
+        User user = getUserFromSession();
+
+        model.addAttribute("userInSession", user);
         model.addAttribute("users", users);
         return "users";
     }
@@ -105,7 +105,34 @@ public class AuthController {
         return "roles";
     }
 
+    private User getUserFromSession(){
+        org.springframework.security.core.userdetails.User userFromSecurity = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
+        User user = userService.findByEmail(userFromSecurity.getUsername());
+        return user;
+    }
 
+    @GetMapping("/updateUser")
+    public String updateUser(@ModelAttribute User user,
+                             Model model)  {
+        System.out.println("UPDATEUSER!!!!!");
+        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("user", userService.findByEmail(user.getEmail()));
+
+        return "updateUser";
+    }
+
+    @PostMapping("/updateUser/save")
+    public String saveUpdatedUser(@ModelAttribute User user,
+                                  @RequestParam String[] roleId,
+                                  Model model) {
+        System.out.println("update user save");
+        System.out.println("Roles size = " + roleId.length);
+
+        return "redirect:/users";
+    }
 
 }
