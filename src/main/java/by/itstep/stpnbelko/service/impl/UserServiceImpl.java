@@ -51,18 +51,21 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Arrays.asList(role));
         user.setActivationCode(String.valueOf(UUID.randomUUID()));
 
-
 //        Высылаем письмо с кодом активации
         if (!StringUtils.isEmpty(user.getEmail())) {
-            String message = String.format(
-                    "Hello, %s! \n" +
-                            "Welcome to CurrencyApp.\n" +
-                            "To complete the registration follow the link below.\n" +
-                            "%s%s", user.getFirstName(), ACTIVATION_LINK, user.getActivationCode());
-            mailSender.send(user.getEmail(), "ACTIVATION_CODE", message);
+            sendEmail(user);
         }
 
         userRepository.save(user);
+    }
+
+    private void sendEmail(User user) {
+        String message = String.format(
+                "Hello, %s! \n" +
+                        "Welcome to CurrencyApp.\n" +
+                        "To complete the registration follow the link below.\n" +
+                        "%s%s", user.getFirstName(), ACTIVATION_LINK, user.getActivationCode());
+        mailSender.send(user.getEmail(), "ACTIVATION_CODE", message);
     }
 
     @Override
@@ -103,9 +106,22 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public void updateUserInfo(User user, List<Role> roleList) {
+        User updatedUser = userRepository.findByEmail(user.getEmail());
+        updatedUser.setRoles(roleList);
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setLastName(user.getLastName());
+        
+        if(!user.getEmail().equals(updatedUser.getEmail())) {
+            updatedUser.setActivationCode(String.valueOf(UUID.randomUUID()));
+            sendEmail(updatedUser);
+        }
+        userRepository.save(updatedUser);
+    }
+
     private UserDto convertEntityToDto(User user) {
         UserDto userDto = new UserDto();
-//        String[] name = user.getName().split(" ");
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
@@ -121,5 +137,9 @@ public class UserServiceImpl implements UserService {
         return roleRepository.save(role);
     }
 
-
+    @Override
+    public boolean deleteUser(User user) {
+        userRepository.delete(user);
+        return true;
+    }
 }

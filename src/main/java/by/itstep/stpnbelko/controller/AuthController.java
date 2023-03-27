@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -84,11 +85,10 @@ public class AuthController {
     }
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable (value="code") String code) {
-        System.out.println("activation mapping");
+    public String activate(Model model, @PathVariable(value = "code") String code) {
         boolean isActivated = userService.activateUser(code);
 
-        if(isActivated) {
+        if (isActivated) {
             model.addAttribute("message", "User successfully activated. Please login");
         } else {
             model.addAttribute("message", "Activation code is not found");
@@ -105,7 +105,7 @@ public class AuthController {
         return "roles";
     }
 
-    private User getUserFromSession(){
+    private User getUserFromSession() {
         org.springframework.security.core.userdetails.User userFromSecurity = (org.springframework.security.core.userdetails.User) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -117,8 +117,7 @@ public class AuthController {
 
     @GetMapping("/updateUser")
     public String updateUser(@ModelAttribute User user,
-                             Model model)  {
-        System.out.println("UPDATEUSER!!!!!");
+                             Model model) {
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("user", userService.findByEmail(user.getEmail()));
 
@@ -127,11 +126,27 @@ public class AuthController {
 
     @PostMapping("/updateUser/save")
     public String saveUpdatedUser(@ModelAttribute User user,
-                                  @RequestParam String[] roleId,
+                                  @RequestParam(value = "roleName", required = false) String[] roleName,
                                   Model model) {
-        System.out.println("update user save");
-        System.out.println("Roles size = " + roleId.length);
+        List<Role> roleList = new ArrayList<>();
 
+        if (roleName != null) {
+            for (String s : roleName) {
+                System.out.println(s);
+                Role role = roleService.getByName(s);
+                roleList.add(role);
+            }
+        }
+        userService.updateUserInfo(user, roleList);
+
+        return "redirect:/users";
+    }
+
+    @GetMapping("/deleteUser")
+    public String deleteUser(@ModelAttribute User user,
+                             Model model) {
+        userService.deleteUser(userService.findByEmail(user.getEmail()));
+        model.addAttribute("message", "User " + user.getEmail() + "successfully removed.");
         return "redirect:/users";
     }
 

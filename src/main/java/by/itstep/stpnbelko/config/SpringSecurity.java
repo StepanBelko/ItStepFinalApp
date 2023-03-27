@@ -42,6 +42,7 @@ public class SpringSecurity {
                                 .requestMatchers("/updateUser/save").permitAll()
                                 .requestMatchers("/updateUser/*").permitAll()
                                 .requestMatchers("/updateUser/**").permitAll()
+                                .requestMatchers("/deleteUser").hasRole("ADMIN")
                                 .requestMatchers("/activate/*").permitAll()
                                 .requestMatchers("/activate/**").permitAll()
                                 .requestMatchers("/activate/").permitAll()
