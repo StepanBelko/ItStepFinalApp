@@ -37,15 +37,11 @@ public class SpringSecurity {
                                 .requestMatchers("/coins/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/history/**").hasRole("ADMIN")
                                 .requestMatchers("/updateUser").permitAll()
-                                .requestMatchers("/updateUser/save/**").permitAll()
-                                .requestMatchers("/updateUser/save/*").permitAll()
-                                .requestMatchers("/updateUser/save").permitAll()
-                                .requestMatchers("/updateUser/*").permitAll()
                                 .requestMatchers("/updateUser/**").permitAll()
                                 .requestMatchers("/deleteUser").hasRole("ADMIN")
-                                .requestMatchers("/activate/*").permitAll()
+//                                .requestMatchers("/activate/*").permitAll()
                                 .requestMatchers("/activate/**").permitAll()
-                                .requestMatchers("/activate/").permitAll()
+//                                .requestMatchers("/activate").permitAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

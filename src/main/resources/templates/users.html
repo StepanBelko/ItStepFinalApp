@@ -49,11 +49,6 @@
     </div>
 </nav>
 
-<div>
-    <a th:if="${message != null}" th:text="${message}" class="alert alert-success"></a>
-</div>
-
-
 <div class="container">
     <div class="row">
         <h1> Registered Users </h1>
@@ -61,6 +56,9 @@
 
     <h3 th:text="'User in session ' + ${userInSession.email}">: </h3>
     <h3 th:text="'User roles ' + ${userInSession.roles.size()}">: </h3>
+    <div>
+        <a th:if="${message != null}" th:text="${message}" class="alert alert-success"></a>
+    </div>
 
     <table class="table table-striped table-bordered table-hover">
         <thead class="table-dark">
@@ -103,7 +101,7 @@
                         </form>
 
 
-                        <form method="get"
+                        <form th:if="${userInSession.email} != ${user.email}" method="get"
                               th:action="@{/deleteUser}" th:object="${user}">
                             <div class="mb-3">
                                 <input name="email" type="hidden" th:value="${user.email}"/>

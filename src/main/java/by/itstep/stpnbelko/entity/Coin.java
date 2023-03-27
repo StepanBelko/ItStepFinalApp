@@ -2,13 +2,16 @@ package by.itstep.stpnbelko.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import java.util.List;
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -16,7 +19,6 @@ import java.util.Objects;
 public class Coin {
 
 
-//    @Id
     @Column(nullable = false)
     private int id;
 
@@ -37,7 +39,7 @@ public class Coin {
     @Column(name = "price_usd")
     private double price_usd;
 
-    @Column(name ="price")
+    @Column(name = "price")
     @JsonIgnore
     private double price;
 

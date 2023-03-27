@@ -22,12 +22,10 @@ public class AuthController {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final HttpSession httpSession;
 
     public AuthController(UserService userService, RoleService roleService, HttpSession httpSession) {
         this.userService = userService;
         this.roleService = roleService;
-        this.httpSession = httpSession;
     }
 
     @GetMapping("index")
@@ -106,13 +104,13 @@ public class AuthController {
     }
 
     private User getUserFromSession() {
-        org.springframework.security.core.userdetails.User userFromSecurity = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+        org.springframework.security.core.userdetails.User userFromSecurity
+                = (org.springframework.security.core.userdetails.User) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
 
-        User user = userService.findByEmail(userFromSecurity.getUsername());
-        return user;
+        return userService.findByEmail(userFromSecurity.getUsername());
     }
 
     @GetMapping("/updateUser")
@@ -132,7 +130,6 @@ public class AuthController {
 
         if (roleName != null) {
             for (String s : roleName) {
-                System.out.println(s);
                 Role role = roleService.getByName(s);
                 roleList.add(role);
             }

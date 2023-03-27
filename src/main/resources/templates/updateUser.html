@@ -78,21 +78,12 @@
                     </div>
 
                     <div>
-                        <label class="form-label">Roles</label>
-                        <div th:each="role: ${roles}">
+                        <label class="form-label">Roles</label> <br>
+                        <a th:each="role: ${roles}">
                             <input th:name="roleName" id="roleName" type="checkbox" th:value="${role.name}"/>
-                            <label for="roleName" th:text="${role.name}"></label>
-                        </div>
+                            <label for="roleName" th:text="${role.name}"></label>  <br>
+                        </a>  <br>
                     </div>
-
-
-<!--                    <c:forEach var="role" items="${roles}">-->
-<!--                        <input name="role_id"-->
-<!--                        <c:forEach var="usrRole" items="${updatedUser.role}">-->
-<!--                            ${usrRole.id == role.id ? 'checked' : ''}-->
-<!--                        </c:forEach> type="checkbox" value="${role.id}" id="roleId">-->
-<!--                        <label for="roleId">${role.name}</label> <br>-->
-<!--                    </c:forEach>-->
 
                     <div class="form-group mb-3">
                         <button class="btn btn-primary" type="submit">Submit</button>

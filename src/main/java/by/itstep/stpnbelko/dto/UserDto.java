@@ -17,19 +17,24 @@ import java.util.List;
 public class UserDto
 {
     private Long id;
+
     @NotEmpty
     private String firstName;
+
     @NotEmpty
     private String lastName;
+
     @NotEmpty(message = "Email should not be empty")
+
     @Email
     private String email;
-//    @NotEmpty
+
     private List<Role> roleSet;
+
     @NotEmpty(message = "Password should not be empty")
     private String password;
-//    @NotEmpty
+
     private boolean active;
-//    @NotEmpty
+
     private String activationCode;
 }

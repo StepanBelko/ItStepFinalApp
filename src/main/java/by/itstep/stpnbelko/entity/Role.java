@@ -17,8 +17,8 @@ import java.util.List;
 public class Role
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(nullable=false, unique=true)
     private String descr;
@@ -28,4 +28,8 @@ public class Role
 
     @ManyToMany(mappedBy="roles")
     private List<User> users;
+
+    public List<User> getUsers() {
+        return users;
+    }
 }
